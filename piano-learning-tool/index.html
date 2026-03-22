@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano Master Pro - Learn Piano Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="piano-loader">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p>Loading Piano Master Pro...</p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="hidden">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <span class="logo">🎹</span>
+                <h1>Piano Master Pro</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" data-page="dashboard" class="nav-link active">Dashboard</a></li>
+                <li><a href="#" data-page="lessons" class="nav-link">Lessons</a></li>
+                <li><a href="#" data-page="practice" class="nav-link">Practice</a></li>
+                <li><a href="#" data-page="songs" class="nav-link">Songs</a></li>
+                <li><a href="#" data-page="settings" class="nav-link">Settings</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="streak-badge">
+                    <span class="fire">🔥</span>
+                    <span id="streak-count">0</span>
+                </div>
+                <div class="xp-display">
+                    <span id="xp-count">0</span> XP
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <section id="page-dashboard" class="page active">
+                <div class="dashboard-header">
+                    <h2>Welcome back, <span id="user-name">Pianist</span>!</h2>
+                    <p>Continue your musical journey</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Progress Card -->
+                    <div class="card progress-card">
+                        <h3>Your Progress</h3>
+                        <div class="progress-ring-container">
+                            <svg class="progress-ring" width="150" height="150">
+                                <circle class="progress-ring-bg" cx="75" cy="75" r="65"/>
+                                <circle class="progress-ring-fill" cx="75" cy="75" r="65" id="progress-circle"/>
+                            </svg>
+                            <div class="progress-text">
+                                <span id="progress-percent">0</span>%
+                            </div>
+                        </div>
+                        <p>Overall Completion</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="card stats-card">
+                        <h3>Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-value" id="total-practice-time">0h</span>
+                                <span class="stat-label">Practice Time</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="lessons-completed">0</span>
+                                <span class="stat-label">Lessons Done</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="songs-learned">0</span>
+                                <span class="stat-label">Songs Learned</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="accuracy-avg">0%</span>
+                                <span class="stat-label">Avg Accuracy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Practice -->
+                    <div class="card quick-practice-card">
+                        <h3>Quick Practice</h3>
+                        <div class="quick-actions">
+                            <button class="quick-btn" onclick="PianoApp.startQuickPractice('scales')">
+                                <span class="icon">🎵</span>
+                                Scales
+                            </button>
+                            <button class="quick-btn" onclick="PianoApp.startQuickPractice('chords')">
+                                <span class="icon">🎶</span>
+                                Chords
+                            </button>
+                            <button class="quick-btn" onclick="PianoApp.startQuickPractice('freestyle')">
+                                <span class="icon">🎼</span>
+                                Free Play
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card activity-card">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list" id="activity-list">
+                            <p class="empty-state">No recent activity</p>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="card achievements-card">
+                        <h3>Achievements</h3>
+                        <div class="achievements-grid" id="achievements-grid">
+                            <!-- Achievements will be populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lessons Page -->
+            <section id="page-lessons" class="page">
+                <div class="page-header">
+                    <h2>Piano Lessons</h2>
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="beginner">Beginner</button>
+                        <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+                        <button class="filter-btn" data-filter="advanced">Advanced</button>
+                    </div>
+                </div>
+
+                <div class="lessons-grid" id="lessons-grid">
+                    <!-- Lessons will be populated by JS -->
+                </div>
+            </section>
+
+            <!-- Practice Page -->
+            <section id="page-practice" class="page">
+                <div class="practice-container">
+                    <!-- Practice Header -->
+                    <div class="practice-header">
+                        <div class="practice-info">
+                            <h2 id="practice-title">Free Practice</h2>
+                            <p id="practice-description">Play freely and explore</p>
+                        </div>
+                        <div class="practice-controls">
+                            <button id="btn-metronome" class="control-btn" onclick="PianoApp.toggleMetronome()">
+                                <span class="icon">⏱️</span>
+                                Metronome
+                            </button>
+                            <button id="btn-record" class="control-btn" onclick="PianoApp.toggleRecording()">
+                                <span class="icon">⏺️</span>
+                                Record
+                            </button>
+                            <button id="btn-playback" class="control-btn" onclick="PianoApp.playRecording()" disabled>
+                                <span class="icon">▶️</span>
+                                Play
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sheet Music Display -->
+                    <div class="sheet-music-container" id="sheet-music">
+                        <div class="staff">
+                            <div class="staff-lines">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                            <div class="clef treble-clef">𝄞</div>
+                            <div class="notes-display" id="notes-display">
+                                <!-- Notes will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metronome Display -->
+                    <div class="metronome-container hidden" id="metronome-container">
+                        <div class="metronome-visual">
+                            <div class="metronome-arm" id="metronome-arm"></div>
+                        </div>
+                        <div class="tempo-control">
+                            <button onclick="PianoApp.adjustTempo(-5)">-</button>
+                            <span id="tempo-display">120 BPM</span>
+                            <button onclick="PianoApp.adjustTempo(5)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Piano Keyboard -->
+                    <div class="piano-container">
+                        <div class="keyboard" id="keyboard">
+                            <!-- Keys will be generated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Key Labels Toggle -->
+                    <div class="keyboard-options">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="show-labels" checked onchange="PianoApp.toggleLabels()">
+                            <span>Show Key Labels</span>
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="show-shortcuts" checked onchange="PianoApp.toggleShortcuts()">
+                            <span>Show Keyboard Shortcuts</span>
+                        </label>
+                    </div>
+
+                    <!-- Performance Feedback -->
+                    <div class="feedback-container hidden" id="feedback-container">
+                        <div class="feedback-card">
+                            <h3>Performance Analysis</h3>
+                            <div class="score-display">
+                                <div class="score-circle">
+                                    <span id="score-value">0</span>
+                                </div>
+                            </div>
+                            <div class="feedback-details">
+                                <div class="feedback-item">
+                                    <span class="label">Accuracy</span>
+                                    <div class="bar">
+                                        <div class="bar-fill" id="accuracy-bar"></div>
+                                    </div>
+                                    <span class="value" id="accuracy-value">0%</span>
+                                </div>
+                                <div class="feedback-item">
+                                    <span class="label">Timing</span>
+                                    <div class="bar">
+                                        <div class="bar-fill" id="timing-bar"></div>
+                                    </div>
+                                    <span class="value" id="timing-value">0%</span>
+                                </div>
+                                <div class="feedback-item">
+                                    <span class="label">Rhythm</span>
+                                    <div class="bar">
+                                        <div class="bar-fill" id="rhythm-bar"></div>
+                                    </div>
+                                    <span class="value" id="rhythm-value">0%</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="PianoApp.closeFeedback()">Continue</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Songs Page -->
+            <section id="page-songs" class="page">
+                <div class="page-header">
+                    <h2>Song Library</h2>
+                    <div class="search-box">
+                        <input type="text" id="song-search" placeholder="Search songs...">
+                    </div>
+                </div>
+
+                <div class="songs-categories">
+                    <button class="category-btn active" data-category="all">All Songs</button>
+                    <button class="category-btn" data-category="classical">Classical</button>
+                    <button class="category-btn" data-category="pop">Pop</button>
+                    <button class="category-btn" data-category="jazz">Jazz</button>
+                    <button class="category-btn" data-category="kids">Kids</button>
+                </div>
+
+                <div class="songs-grid" id="songs-grid">
+                    <!-- Songs will be populated by JS -->
+                </div>
+            </section>
+
+            <!-- Settings Page -->
+            <section id="page-settings" class="page">
+                <div class="page-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h3>Profile</h3>
+                        <div class="setting-item">
+                            <label>Your Name</label>
+                            <input type="text" id="setting-name" placeholder="Enter your name">
+                        </div>
+                        <div class="setting-item">
+                            <label>Skill Level</label>
+                            <select id="setting-level">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Audio</h3>
+                        <div class="setting-item">
+                            <label>Master Volume</label>
+                            <input type="range" id="setting-volume" min="0" max="100" value="80">
+                            <span id="volume-display">80%</span>
+                        </div>
+                        <div class="setting-item">
+                            <label>Piano Sound</label>
+                            <select id="setting-sound">
+                                <option value="grand">Grand Piano</option>
+                                <option value="electric">Electric Piano</option>
+                                <option value="synth">Synth Piano</option>
+                                <option value="organ">Organ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Practice</h3>
+                        <div class="setting-item">
+                            <label>Default Tempo (BPM)</label>
+                            <input type="number" id="setting-tempo" min="40" max="200" value="120">
+                        </div>
+                        <div class="setting-item">
+                            <label>Metronome Sound</label>
+                            <select id="setting-metronome-sound">
+                                <option value="click">Click</option>
+                                <option value="beep">Beep</option>
+                                <option value="wood">Wood Block</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Display</h3>
+                        <div class="setting-item toggle">
+                            <label>Dark Mode</label>
+                            <label class="switch">
+                                <input type="checkbox" id="setting-dark-mode" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle">
+                            <label>Show Falling Notes</label>
+                            <label class="switch">
+                                <input type="checkbox" id="setting-falling-notes" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle">
+                            <label>Enable Animations</label>
+                            <label class="switch">
+                                <input type="checkbox" id="setting-animations" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>MIDI</h3>
+                        <div class="setting-item">
+                            <label>MIDI Input Device</label>
+                            <select id="midi-input">
+                                <option value="">No MIDI device detected</option>
+                            </select>
+                            <button class="btn-secondary" onclick="PianoApp.refreshMIDI()">Refresh</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section danger-zone">
+                        <h3>Data Management</h3>
+                        <button class="btn-danger" onclick="PianoApp.resetProgress()">Reset All Progress</button>
+                        <button class="btn-secondary" onclick="PianoApp.exportData()">Export Data</button>
+                        <button class="btn-secondary" onclick="PianoApp.importData()">Import Data</button>
+                    </div>
+
+                    <button class="btn-primary save-settings" onclick="PianoApp.saveSettings()">Save Settings</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Lesson Modal -->
+    <div class="modal" id="lesson-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="PianoApp.closeModal('lesson-modal')">&times;</button>
+            <div class="lesson-modal-content">
+                <h2 id="modal-lesson-title">Lesson Title</h2>
+                <div class="lesson-info">
+                    <span class="difficulty-badge" id="modal-lesson-difficulty">Beginner</span>
+                    <span class="duration" id="modal-lesson-duration">10 min</span>
+                </div>
+                <p id="modal-lesson-description">Lesson description goes here...</p>
+                <div class="lesson-objectives">
+                    <h4>What you'll learn:</h4>
+                    <ul id="modal-lesson-objectives">
+                        <!-- Objectives populated by JS -->
+                    </ul>
+                </div>
+                <button class="btn-primary btn-large" onclick="PianoApp.startLesson()">Start Lesson</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- Virtual Keyboard Overlay -->
+    <div class="keyboard-shortcut-overlay" id="shortcut-overlay">
+        <div class="shortcut-content">
+            <h3>Keyboard Shortcuts</h3>
+            <div class="shortcut-grid">
+                <div class="shortcut-item">
+                    <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd><kbd>G</kbd><kbd>H</kbd><kbd>J</kbd>
+                    <p>White keys (C to B)</p>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>W</kbd><kbd>E</kbd><kbd>T</kbd><kbd>Y</kbd><kbd>U</kbd>
+                    <p>Black keys</p>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Z</kbd> / <kbd>X</kbd>
+                    <p>Octave down/up</p>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Space</kbd>
+                    <p>Toggle metronome</p>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>R</kbd>
+                    <p>Start/Stop recording</p>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="PianoApp.closeShortcutOverlay()">Got it!</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
